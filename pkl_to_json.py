@@ -66,6 +66,12 @@ for edge in edges.keys():
     link_cnt[edge[0]] += 1
     link_cnt[edge[1]] += 1
 
+print("link_cnt top 30: ")
+tups = list(link_cnt.items())
+tups.sort(key = lambda x: -x[1])
+for i in range(30):
+    print(tups[i][0]+": "+str(tups[i][1]))
+
 pyq_nodes = []
 pyq_links = []
 for name in names.keys():
