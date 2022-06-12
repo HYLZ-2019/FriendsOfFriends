@@ -11,9 +11,9 @@ function ForceGraph({
     nodeTitle, // given d in nodes, a title string
     nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
     nodeStroke = "#fff", // node stroke color
-    nodeStrokeWidth = 1.5, // node stroke width, in pixels
+    nodeStrokeWidth = 0.5, // node stroke width, in pixels
     nodeStrokeOpacity = 1, // node stroke opacity
-    nodeRadius = 5, // node radius, in pixels
+    nodeRadius = d => 5, // node radius, in pixels
     nodeStrength,
     linkSource = ({source}) => source, // given d in links, returns a node identifier string
     linkTarget = ({target}) => target, // given d in links, returns a node identifier string
@@ -22,14 +22,14 @@ function ForceGraph({
     linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
     linkStrokeLinecap = "round", // link stroke linecap
     linkStrength,
-    colors = d3.schemeTableau10, // an array of color strings, for the node groups
+    colors = ["#66ff99", "#fff68f", "#9999ff"], // an array of color strings, for the node groups
     width = 640, // outer width, in pixels
     height = 400, // outer height, in pixels
     invalidation // when this promise resolves, stop the simulation
   } = {}) {
     // Compute values.
     const N = d3.map(nodes, nodeId).map(intern);
-    const R = d3.map(nodes, nodeId).map(intern);
+    const R = d3.map(nodes, nodeRadius).map(intern);
     const LS = d3.map(links, linkSource).map(intern);
     const LT = d3.map(links, linkTarget).map(intern);
     if (nodeTitle === undefined) nodeTitle = (_, i) => N[i];
@@ -83,12 +83,27 @@ function ForceGraph({
       .selectAll("circle")
       .data(nodes)
       .join("circle")
-        .attr("r", nodeRadius)
+        .attr("r", 5)
         .call(drag(simulation));
+
+    const text = svg.append("g")
+        .attr("fill", nodeFill)
+        .attr("stroke", "#000")
+        .attr("stroke-opacity", nodeStrokeOpacity)
+        .attr("stroke-width", 0.05)
+        .attr("font-size", "0.2em")
+        .style("text-anchor", "middle")
+      .selectAll("text")
+      .data(nodes)
+      .join("text")
+        .text(d => d.id)
+        .call(drag(simulation));
+      
   
     if (W) link.attr("stroke-width", ({index: i}) => W[i]);
     if (L) link.attr("stroke", ({index: i}) => L[i]);
     if (G) node.attr("fill", ({index: i}) => color(G[i]));
+    if (R) node.attr("r", ({index: i}) => R[i]);
     if (T) node.append("title").text(({index: i}) => T[i]);
     if (invalidation != null) invalidation.then(() => simulation.stop());
   
@@ -106,6 +121,10 @@ function ForceGraph({
       node
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
+      
+      text
+        .attr("x", d => d.x)
+        .attr("y", d => d.y);
     }
   
     function drag(simulation) {    

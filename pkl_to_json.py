@@ -4,8 +4,8 @@ import pickle
 import io
 
 # {id: "Tholomyes", group: 1}
-def node_to_string(id, value):
-    return "{id:\"" + id + "\", group: 1, value: " + str(value) + "}"
+def node_to_string(id, value, group, links):
+    return "{id:\"" + id + "\", group: " + str(group) + ", value: " + str(value) + ", links: " + str(links) + "}"
 
 
 # {source: "Napoleon", target: "Myriel", value: 1}
@@ -59,10 +59,22 @@ for pyq in pyq_list:
                 addedge(name2, name1)
                 addedge(name2, sender)
 
+link_cnt = {}
+for name in names.keys():
+    link_cnt[name] = 0
+for edge in edges.keys():
+    link_cnt[edge[0]] += 1
+    link_cnt[edge[1]] += 1
+
 pyq_nodes = []
 pyq_links = []
 for name in names.keys():
-    pyq_nodes.append(node_to_string(name, names[name]))
+    group = 1
+    if (name.find(u"信科")!=-1):
+        group = 2
+    if (name.find(u"清华")!=-1):
+        group = 3
+    pyq_nodes.append(node_to_string(name, names[name], group, link_cnt[name]))
 for edge in edges.keys():
     pyq_links.append(edge_to_string(edge[0], edge[1], edges[edge]))
 
