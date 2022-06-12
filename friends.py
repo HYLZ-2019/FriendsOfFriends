@@ -56,7 +56,7 @@ pyq_btn = win.child_window(title=u'\u670b\u53cb\u5708', control_type="Button")
 all_pyq = []
 all_pyq_contents = set()
 
-filename = "mypyq.pkl"
+filename = "mypyq_new.pkl"
 
 last_content_cnt = 0
 
@@ -76,7 +76,10 @@ while True:
                 if (classname == "ListItem"):
                     # 这是一条朋友圈
                     pyq_contents = x.window_text()
-                    print(pyq_contents)
+                    try:
+                        print(pyq_contents)
+                    except:
+                        print("Failed to print out due to emojis")
                     if (pyq_contents in all_pyq_contents):
                         # 已经爬过这一条了
                         last_content_cnt += 1

@@ -12,7 +12,7 @@ def node_to_string(id, value, group, links):
 def edge_to_string(source, target, value):
     return "{source: \"" + source + "\", target: \"" + target + "\", value: " + str(value) + "}"
 
-with open('mypyq.pkl', 'rb') as f:
+with open('mypyq_new.pkl', 'rb') as f:
     pyq_list = pickle.load(f)
 
 # map: name -> pyq_cnt
