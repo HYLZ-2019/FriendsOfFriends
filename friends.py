@@ -21,7 +21,7 @@ def DFS(win, layers):
         new_layer = []
     return children
 
-
+# 如果下面两行报错，把它们都注释掉就行了
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
