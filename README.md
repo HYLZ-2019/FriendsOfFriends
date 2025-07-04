@@ -26,10 +26,4 @@ cd FriendsOfFriends-main
 python friends.py
 ```
 
-5. 处理数据。
-
-```
-python pkl_to_json.py
-```
-
-6. 打开myfriends.html，查看可视化结果。
+5. 打开myfriends.html，查看可视化结果。

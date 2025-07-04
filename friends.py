@@ -4,7 +4,10 @@ import psutil
 import pywinauto
 from pywinauto.application import Application
 import sys
-import pickle
+import json
+import time
+import os
+from update_graph import update_graph
 
 def DFS(win, layers):
     children = []
@@ -21,10 +24,6 @@ def DFS(win, layers):
         new_layer = []
     return children
 
-# 如果下面两行报错，把它们都注释掉就行了
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 PID = 0
 for proc in psutil.process_iter():
     try:
@@ -32,31 +31,18 @@ for proc in psutil.process_iter():
     except psutil.NoSuchProcess:
         pass
     else:
-        if 'WeChat.exe' == pinfo['name']:
+        if pinfo['name'] == 'WeChat.exe':
             PID = pinfo['pid']
 
 
+if PID == 0:
+    print("WeChat.exe 未运行或未找到进程！")
+    sys.exit(1)
+
 app = Application(backend='uia').connect(process=PID)
-
-
-win = app["微信"]
-
-#print(win.dump_tree())
-
-pyq_btn = win.child_window(title=u'\u670b\u53cb\u5708', control_type="Button")
-
-#cords = pyq_btn.rectangle()
-#pywinauto.mouse.click(button='left', coords=(cords.left + 10, cords.top + 10))
-
-
-#print(dir(pyq_win))
-#print(pyq_win.dump_tree())
-#print(dir( pyq_win.wrapper_object()))
 
 all_pyq = []
 all_pyq_contents = set()
-
-filename = "mypyq_new.pkl"
 
 last_content_cnt = 0
 
@@ -111,13 +97,27 @@ while True:
                 pass
     except:
         pass
-    # 向下滚动
-    cords = pyq_win.rectangle()
-    pywinauto.mouse.scroll(wheel_dist=-5, coords=(cords.left+10, cords.bottom-10))
-    if (last_content_cnt > 20):
-        break
-    if (len(all_pyq) > 50000):
+
+    try:
+        # 向下滚动
+        cords = pyq_win.rectangle()
+        pywinauto.mouse.scroll(wheel_dist=-5, coords=(cords.left+10, cords.bottom-10))
+        if (last_content_cnt > 20):
+            break
+        if (len(all_pyq) > 50000):
+            break
+    except:
+        # 如果滚动失败，可能是朋友圈页面已经关闭
+        print("滚动失败，可能是朋友圈页面已经关闭")
         break
 
-with open(filename, 'wb') as f:
-    pickle.dump(all_pyq, f)
+filename = f"crawled_pyq/{time.strftime('%Y%m%d_%H%M%S')}.json"
+
+# 创建目录（如果不存在）
+os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+with open(filename, 'w', encoding='utf-8') as f:
+    json.dump(all_pyq, f, ensure_ascii=False, indent=2)
+print(f"已保存{len(all_pyq)}条朋友圈到文件: " + filename)
+
+update_graph()
