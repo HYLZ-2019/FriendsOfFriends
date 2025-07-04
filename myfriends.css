@@ -1,19 +1,54 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Helvetica", Arial, sans-serif;
+    overflow: hidden;
+    background-color: #f5f5f5;
+}
+
+h1 {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#graph {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
 .node text {
     font-size: 10px;
     font-family: "Helvetica";
     stroke: none;
     fill: grey;
-  }
-  
-  .link {
+}
+
+.link {
     stroke: #999;
     stroke-opacity: .6;
-  }
-  
-  h3 {
+}
+
+h3 {
     color: #1ABC9C;
     text-align: center;
     font-style: italic;
     font-size: 14px;
     font-family: "Helvetica";
-  }
+}
