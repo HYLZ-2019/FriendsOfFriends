@@ -46,9 +46,7 @@ def update_graph():
             names[name] = 0
 
     for pyq in pyq_list:
-        #print(pyq["content"])
-        lines = pyq["content"].split("\n")
-        sender = lines[0]
+        sender = pyq["sender"]
         incnode(sender)
         if "likes" in pyq:
             like_names = pyq["likes"].split("，")
